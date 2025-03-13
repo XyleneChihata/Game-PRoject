@@ -40,6 +40,7 @@ public class NPCDialogue : MonoBehaviour
         }
     }
 }
+//DialogueSystem (<NPCID>,<DialogueID>,<DialogueBranchID>,<DialogueProgressID>)
 public DialogueEntry[] WaterSpiritDialoguePool =
 {
     new DialogueEntry { id = "1aa1", speakerName = "Water Spirit", dialogueText = "Hello there little spirit!", //Starter convo
