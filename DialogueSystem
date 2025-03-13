@@ -1,0 +1,56 @@
+[System.Serializable]
+public class DialogueEntry
+{
+    public string id;
+    public string speakerName;
+    [TextArea] public string dialogueText;
+    public DialogueChoice[] choices;
+}
+
+[System.Serializable]
+public class DialogueChoice
+{
+    public string choiceText;
+    public string nextDialogueID;
+}
+DialogueEntry GetDialogueByID(string id)
+{
+    foreach (var entry in dialogueDatabase)
+        if (entry.id == id) return entry;
+    return null;
+}
+public class NPCDialogue : MonoBehaviour
+{
+    public DialogueEntry[] dialoguePool; // Assign in Inspector
+
+    public void StartRandomDialogue()
+    {
+        if (dialoguePool.Length == 0) return;
+        
+        int randomIndex = Random.Range(0, dialoguePool.Length);
+        DialogueManager.Instance.StartDialogue(dialoguePool[randomIndex]);
+    }
+
+    void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.CompareTag("Player") && Input.GetKeyDown(KeyCode.Space))
+        {
+            StartRandomDialogue();
+        }
+    }
+}
+public DialogueEntry[] merchantDialoguePool =
+{
+    new DialogueEntry { id = "1a", speakerName = "Merchant", dialogueText = "Looking for something rare?",
+        choices = new DialogueChoice[] {
+            new DialogueChoice { choiceText = "What do you have?", nextDialogueID = "2a" },
+            new DialogueChoice { choiceText = "Got anything cheap?", nextDialogueID = "2b" }
+        }
+    },
+    new DialogueEntry { id = "1b", speakerName = "Merchant", dialogueText = "I have wares for the right price.",
+        choices = new DialogueChoice[] {
+            new DialogueChoice { choiceText = "Show me.", nextDialogueID = "2a" },
+            new DialogueChoice { choiceText = "Any discounts?", nextDialogueID = "2b" }
+        }
+    }
+};
