@@ -21,7 +21,7 @@ public class DialogueChoice
 public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
-    public DialogueUI dialogueUI; // Reference to UI system
+    public DialogueUI dialogueUI;
     private Dictionary<string, DialogueEntry> dialogueDatabase = new Dictionary<string, DialogueEntry>();
 
     private void Awake()
@@ -149,8 +149,8 @@ public DialogueEntry[] WaterSpiritDialoguePool =
             new DialogueChoice { choiceText = "Hi", nextDialogueID = "1ab1" }
         }
     },
-    new DialogueEntry { id = "1aa1", speakerName = "Water Spirit", dialogueText = "A terrible calamity, ruining the seas and laid waste into the waters", nextDialogueID = "1a2" },
-    new DialogueEntry { id = "1ab1", speakerName = "Water Spirit", dialogueText = "You seem to be lost into this place", nextDialogueID = "1a2" },
+    new DialogueEntry { id = "1aa1", speakerName = "Water Spirit", dialogueText = "A terrible calamity, ruining the seas and laid waste into the waters", nextDialogueID = "-1" },
+    new DialogueEntry { id = "1ab1", speakerName = "Water Spirit", dialogueText = "You seem to be lost into this place", nextDialogueID = "-1" },
     new DialogueEntry {
         id = "1ba0", speakerName = "Water Spirit", dialogueText = "It seems to me you are having trouble crossing the currents",
         choices = new DialogueChoice[] {
