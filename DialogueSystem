@@ -53,10 +53,15 @@ public DialogueEntry[] WaterSpiritDialoguePool =
     },
         new DialogueEntry { id = "1ab1", speakerName = "Water Spirit", dialogueText = "You seem to be lost into this place", nextDialogueID = "1a2" //branch 2
     },
-    new DialogueEntry { id = "1ba0", speakerName = "Water Spirit", dialogueText = "I have wares for the right price.",
+    new DialogueEntry { id = "1ba0", speakerName = "Water Spirit", dialogueText = "It seems to me you are having trouble crossing the currents",
         choices = new DialogueChoice[] {
-            new DialogueChoice { choiceText = "Show me.", nextDialogueID = "1ba1" },
-            new DialogueChoice { choiceText = "Any discounts?", nextDialogueID = "2bb1" }
+            new DialogueChoice { choiceText = "The currents are beyond what I can muster", nextDialogueID = "1ba1" },
+            new DialogueChoice { choiceText = "Is there any way to get out of here?", nextDialogueID = "2bb1" }
         }
-    }
+    },
+    new DialogueEntry { id = "1ba1", speakerName = "Water Spirit", dialogueText = "Don't worry, I think I can help you", nextDialogueID = "1bc1" },
+    new DialogueEntry { id = "1bb1", speakerName = "Water Spirit", dialogueText = "Im afraid there's no other choice", nextDialogueID = "1bb2" },
+    new DialogueEntry { id = "1bb2", speakerName = "Water Spirit", dialogueText = "But I think I can help you", nextDialogueID = "1bc1" },
+    new DialogueEntry { id = "1bc1", speakerName = "Water Spirit", dialogueText = "Here, Take this", nextDialogueID = "1bc2" },
+    new DialogueEntry { id = "1bc2", speakerName = "Water Spirit", dialogueText = "It should be able to help you in your trouble", nextDialogueID = "-1"},
 };
