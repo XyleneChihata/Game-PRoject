@@ -1,3 +1,4 @@
+
 [System.Serializable]
 public class DialogueEntry
 {
@@ -21,7 +22,7 @@ DialogueEntry GetDialogueByID(string id)
 }
 public class NPCDialogue : MonoBehaviour
 {
-    public DialogueEntry[] dialoguePool; // Assign in Inspector
+    public DialogueEntry[] dialoguePool;
 
     public void StartRandomDialogue()
     {
@@ -39,15 +40,19 @@ public class NPCDialogue : MonoBehaviour
         }
     }
 }
-public DialogueEntry[] merchantDialoguePool =
+public DialogueEntry[] WaterSpiritDialoguePool =
 {
-    new DialogueEntry { id = "1a", speakerName = "Merchant", dialogueText = "Looking for something rare?",
+    new DialogueEntry { id = "1a", speakerName = "Water Spirit", dialogueText = "Hello there little spirit!", //Starter convo
         choices = new DialogueChoice[] {
-            new DialogueChoice { choiceText = "What do you have?", nextDialogueID = "2a" },
-            new DialogueChoice { choiceText = "Got anything cheap?", nextDialogueID = "2b" }
+            new DialogueChoice { choiceText = "What happened in this place?", nextDialogueID = "1a1" }, //branch 1
+            new DialogueChoice { choiceText = "Hi", nextDialogueID = "1b1" } //branch 2
         }
     },
-    new DialogueEntry { id = "1b", speakerName = "Merchant", dialogueText = "I have wares for the right price.",
+        new DialogueEntry { id = "2a1", speakerName = "Water Spirit", dialogueText = "A terrible calamity, ruining the seas and laid waste into the waters", nextDialogueID = "1a2" //branch 1
+    },
+        new DialogueEntry { id = "2a2", speakerName = "Water Spirit", dialogueText = "You seem to be lost into this place", nextDialogueID = "1a2" //branch 2
+    },
+    new DialogueEntry { id = "1b", speakerName = "Water Spirit", dialogueText = "I have wares for the right price.",
         choices = new DialogueChoice[] {
             new DialogueChoice { choiceText = "Show me.", nextDialogueID = "2a" },
             new DialogueChoice { choiceText = "Any discounts?", nextDialogueID = "2b" }
