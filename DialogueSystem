@@ -8,7 +8,7 @@ public class DialogueEntry
     public string speakerName;
     [TextArea] public string dialogueText;
     public DialogueChoice[] choices;
-    public string nextDialogueID; // For direct continuation without choices
+    public string nextDialogueID;
 }
 
 [System.Serializable]
