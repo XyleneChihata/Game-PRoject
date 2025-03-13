@@ -43,7 +43,7 @@ public class NPCDialogue : MonoBehaviour
 //DialogueSystem (<NPCID>,<DialogueID>,<DialogueBranchID>,<DialogueProgressID>)
 public DialogueEntry[] WaterSpiritDialoguePool =
 {
-    new DialogueEntry { id = "1aa1", speakerName = "Water Spirit", dialogueText = "Hello there little spirit!", //Starter convo
+    new DialogueEntry { id = "1aa0", speakerName = "Water Spirit", dialogueText = "Hello there little spirit!", //Starter convo
         choices = new DialogueChoice[] {
             new DialogueChoice { choiceText = "What happened in this place?", nextDialogueID = "1aa1" }, //branch 1
             new DialogueChoice { choiceText = "Hi", nextDialogueID = "1ab1" } //branch 2
@@ -53,7 +53,7 @@ public DialogueEntry[] WaterSpiritDialoguePool =
     },
         new DialogueEntry { id = "1ab1", speakerName = "Water Spirit", dialogueText = "You seem to be lost into this place", nextDialogueID = "1a2" //branch 2
     },
-    new DialogueEntry { id = "1b", speakerName = "Water Spirit", dialogueText = "I have wares for the right price.",
+    new DialogueEntry { id = "1ba0", speakerName = "Water Spirit", dialogueText = "I have wares for the right price.",
         choices = new DialogueChoice[] {
             new DialogueChoice { choiceText = "Show me.", nextDialogueID = "1ba1" },
             new DialogueChoice { choiceText = "Any discounts?", nextDialogueID = "2bb1" }
