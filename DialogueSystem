@@ -1,3 +1,5 @@
+using UnityEngine;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class DialogueEntry
@@ -6,6 +8,7 @@ public class DialogueEntry
     public string speakerName;
     [TextArea] public string dialogueText;
     public DialogueChoice[] choices;
+    public string nextDialogueID; // For direct continuation without choices
 }
 
 [System.Serializable]
@@ -14,20 +17,55 @@ public class DialogueChoice
     public string choiceText;
     public string nextDialogueID;
 }
-DialogueEntry GetDialogueByID(string id)
+
+public class DialogueManager : MonoBehaviour
 {
-    foreach (var entry in dialogueDatabase)
-        if (entry.id == id) return entry;
-    return null;
+    public static DialogueManager Instance;
+    public DialogueUI dialogueUI; // Reference to UI system
+    private Dictionary<string, DialogueEntry> dialogueDatabase = new Dictionary<string, DialogueEntry>();
+
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+    }
+
+    public void LoadDialoguePool(DialogueEntry[] dialoguePool)
+    {
+        dialogueDatabase.Clear();
+        foreach (var entry in dialoguePool)
+        {
+            if (!dialogueDatabase.ContainsKey(entry.id))
+                dialogueDatabase.Add(entry.id, entry);
+        }
+    }
+
+    public void StartDialogue(DialogueEntry entry)
+    {
+        dialogueUI.ShowDialogue(entry);
+    }
+
+    public DialogueEntry GetDialogueByID(string id)
+    {
+        return dialogueDatabase.ContainsKey(id) ? dialogueDatabase[id] : null;
+    }
 }
+
 public class NPCDialogue : MonoBehaviour
 {
     public DialogueEntry[] dialoguePool;
 
+    private void Start()
+    {
+        DialogueManager.Instance.LoadDialoguePool(dialoguePool);
+    }
+
     public void StartRandomDialogue()
     {
         if (dialoguePool.Length == 0) return;
-        
+
         int randomIndex = Random.Range(0, dialoguePool.Length);
         DialogueManager.Instance.StartDialogue(dialoguePool[randomIndex]);
     }
@@ -40,28 +78,89 @@ public class NPCDialogue : MonoBehaviour
         }
     }
 }
-//DialogueSystem (<NPCID>,<DialogueID>,<DialogueBranchID>,<DialogueProgressID>)
+
+public class DialogueUI : MonoBehaviour
+{
+    public TMPro.TextMeshProUGUI speakerText;
+    public TMPro.TextMeshProUGUI dialogueText;
+    public GameObject dialoguePanel;
+    public Transform choiceContainer;
+    public GameObject choicePrefab;
+    
+    private DialogueEntry currentDialogue;
+
+    public void ShowDialogue(DialogueEntry entry)
+    {
+        currentDialogue = entry;
+        speakerText.text = entry.speakerName;
+        dialogueText.text = entry.dialogueText;
+        dialoguePanel.SetActive(true);
+
+        foreach (Transform child in choiceContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        if (entry.choices != null && entry.choices.Length > 0)
+        {
+            foreach (var choice in entry.choices)
+            {
+                GameObject choiceObj = Instantiate(choicePrefab, choiceContainer);
+                choiceObj.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = choice.choiceText;
+                choiceObj.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => OnChoiceSelected(choice.nextDialogueID));
+            }
+        }
+        else
+        {
+            Invoke("AutoContinue", 1.5f);
+        }
+    }
+
+    private void AutoContinue()
+    {
+        if (!string.IsNullOrEmpty(currentDialogue.nextDialogueID) && currentDialogue.nextDialogueID != "-1")
+        {
+            ShowDialogue(DialogueManager.Instance.GetDialogueByID(currentDialogue.nextDialogueID));
+        }
+        else
+        {
+            CloseDialogue();
+        }
+    }
+
+    public void OnChoiceSelected(string nextID)
+    {
+        ShowDialogue(DialogueManager.Instance.GetDialogueByID(nextID));
+    }
+
+    public void CloseDialogue()
+    {
+        dialoguePanel.SetActive(false);
+    }
+}
+
+
 public DialogueEntry[] WaterSpiritDialoguePool =
 {
-    new DialogueEntry { id = "1aa0", speakerName = "Water Spirit", dialogueText = "Hello there little spirit!", //Starter convo
+    new DialogueEntry {
+        id = "1aa0", speakerName = "Water Spirit", dialogueText = "Hello there little spirit!",
         choices = new DialogueChoice[] {
-            new DialogueChoice { choiceText = "What happened in this place?", nextDialogueID = "1aa1" }, //branch 1
-            new DialogueChoice { choiceText = "Hi", nextDialogueID = "1ab1" } //branch 2
+            new DialogueChoice { choiceText = "What happened in this place?", nextDialogueID = "1aa1" },
+            new DialogueChoice { choiceText = "Hi", nextDialogueID = "1ab1" }
         }
     },
-        new DialogueEntry { id = "1aa1", speakerName = "Water Spirit", dialogueText = "A terrible calamity, ruining the seas and laid waste into the waters", nextDialogueID = "1a2" //branch 1
-    },
-        new DialogueEntry { id = "1ab1", speakerName = "Water Spirit", dialogueText = "You seem to be lost into this place", nextDialogueID = "1a2" //branch 2
-    },
-    new DialogueEntry { id = "1ba0", speakerName = "Water Spirit", dialogueText = "It seems to me you are having trouble crossing the currents",
+    new DialogueEntry { id = "1aa1", speakerName = "Water Spirit", dialogueText = "A terrible calamity, ruining the seas and laid waste into the waters", nextDialogueID = "1a2" },
+    new DialogueEntry { id = "1ab1", speakerName = "Water Spirit", dialogueText = "You seem to be lost into this place", nextDialogueID = "1a2" },
+    new DialogueEntry {
+        id = "1ba0", speakerName = "Water Spirit", dialogueText = "It seems to me you are having trouble crossing the currents",
         choices = new DialogueChoice[] {
             new DialogueChoice { choiceText = "The currents are beyond what I can muster", nextDialogueID = "1ba1" },
-            new DialogueChoice { choiceText = "Is there any way to get out of here?", nextDialogueID = "2bb1" }
+            new DialogueChoice { choiceText = "Is there any way to get out of here?", nextDialogueID = "1bb1" }
         }
     },
     new DialogueEntry { id = "1ba1", speakerName = "Water Spirit", dialogueText = "Don't worry, I think I can help you", nextDialogueID = "1bc1" },
-    new DialogueEntry { id = "1bb1", speakerName = "Water Spirit", dialogueText = "Im afraid there's no other choice", nextDialogueID = "1bb2" },
+    new DialogueEntry { id = "1bb1", speakerName = "Water Spirit", dialogueText = "I'm afraid there's no other choice", nextDialogueID = "1bb2" },
     new DialogueEntry { id = "1bb2", speakerName = "Water Spirit", dialogueText = "But I think I can help you", nextDialogueID = "1bc1" },
     new DialogueEntry { id = "1bc1", speakerName = "Water Spirit", dialogueText = "Here, Take this", nextDialogueID = "1bc2" },
-    new DialogueEntry { id = "1bc2", speakerName = "Water Spirit", dialogueText = "It should be able to help you in your trouble", nextDialogueID = "-1"},
+    new DialogueEntry { id = "1bc2", speakerName = "Water Spirit", dialogueText = "It should be able to help you in your trouble", nextDialogueID = "-1" },
 };
