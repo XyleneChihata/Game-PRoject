@@ -1,0 +1,16 @@
+DialogueSystem has 
+<NpcID>, <DialogueID>, <BranchID>, <ProgressionID>
+NpcID for who speaks
+DialogueID for what conversation will start
+BranchID for second answer branching conversation 
+ProgressionID for where is it in the conversation
+
+DialogueSystem fills the dialogues
+
+CharacterStats will contain the character save states like:
+Quest completed (If quest is completed, dialogue ignores it and move to next)
+Story completed (If story is completed it starts on incomplete story)
+Conditional States <boolean> (for values like gate block entry, river crossing pass)
+
+This will be saved in a .Json as a save state
+
