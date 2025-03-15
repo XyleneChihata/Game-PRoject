@@ -4,9 +4,9 @@ public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public GameObject projectilePrefab;
-    public Transform shootPoint; // Empty GameObject at the muzzle of the player
+    public Transform shootPoint;
     private Vector2 moveDirection;
-    private Vector2 lastDirection = Vector2.right; // Default direction
+    private Vector2 lastDirection = Vector2.right;
 
     void Update()
     {
@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
 
         if (moveDirection != Vector2.zero)
         {
-            lastDirection = moveDirection; // Store last direction for shooting
+            lastDirection = moveDirection;
         }
 
         transform.position += (Vector3)moveDirection * moveSpeed * Time.deltaTime;
@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
 
     void HandleShooting()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) // Press space to shoot
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             Shoot();
         }
@@ -38,7 +38,13 @@ public class PlayerController : MonoBehaviour
 
     void Shoot()
     {
+        Debug.Log("Attacks!");
+
+        // Calculate direction from player to mouse cursor
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 shootDirection = (mousePosition - transform.position).normalized;
+
         GameObject projectile = Instantiate(projectilePrefab, shootPoint.position, Quaternion.identity);
-        projectile.GetComponent<Projectile>().SetDirection(lastDirection);
+        projectile.GetComponent<Projectile>().SetDirection(shootDirection);
     }
 }
