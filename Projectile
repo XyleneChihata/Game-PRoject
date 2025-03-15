@@ -2,18 +2,24 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    private float damage;
+    public float speed = 10f;
+    private Vector2 moveDirection;
 
-    public void SetDamage(float dmg)
+    public void SetDirection(Vector2 direction)
     {
-        damage = dmg;
+        moveDirection = direction;
+        transform.right = direction; 
+    }
+
+    void Update()
+    {
+        transform.position += (Vector3)moveDirection * speed * Time.deltaTime;
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (!other.CompareTag("Player"))
         {
-            other.GetComponent<PlayerHealth>().TakeDamage(damage);
             Destroy(gameObject);
         }
     }
