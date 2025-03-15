@@ -1,0 +1,19 @@
+using UnityEngine;
+
+public class MeleeHitbox : MonoBehaviour
+{
+    private float damage;
+
+    public void SetDamage(float dmg)
+    {
+        damage = dmg;
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            other.GetComponent<PlayerHealth>().TakeDamage(damage);
+        }
+    }
+}
