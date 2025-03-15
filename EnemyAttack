@@ -1,0 +1,90 @@
+using UnityEngine;
+using System.Collections;
+
+public class EnemyAttack : MonoBehaviour
+{
+    public bool isRanged; // Toggle melee or ranged
+    public GameObject meleeWarningPrefab; // Red warning pie
+    public GameObject rangedWarningPrefab; // Red aiming line
+    public GameObject meleeHitboxPrefab; // Damage trigger
+    public GameObject projectilePrefab; // Projectile for ranged attack
+    public Transform attackPoint; // Where attacks originate
+    public float attackCooldown = 3f;
+    public float meleeWarningDuration = 2f;
+    public float rangedWarningDuration = 1f;
+    public float meleeDamage = 10f;
+    public float projectileSpeed = 5f;
+    public float projectileDamage = 15f;
+
+    private bool isAttacking = false;
+    private Transform player;
+
+    void Start()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+    }
+
+    void Update()
+    {
+        if (!isAttacking)
+        {
+            StartCoroutine(AttackSequence());
+        }
+    }
+
+    IEnumerator AttackSequence()
+    {
+        isAttacking = true;
+
+        if (isRanged)
+        {
+            yield return StartCoroutine(RangedAttack());
+        }
+        else
+        {
+            yield return StartCoroutine(MeleeAttack());
+        }
+
+        yield return new WaitForSeconds(attackCooldown);
+        isAttacking = false;
+    }
+
+    // ** Melee Attack Sequence **
+    IEnumerator MeleeAttack()
+    {
+        // Spawn Warning Pie
+        GameObject warning = Instantiate(meleeWarningPrefab, attackPoint.position, attackPoint.rotation);
+        warning.transform.parent = transform;
+
+        yield return new WaitForSeconds(meleeWarningDuration); // Wait 2 seconds before attacking
+
+        // Destroy warning & Spawn Damage Hitbox
+        Destroy(warning);
+        GameObject hitbox = Instantiate(meleeHitboxPrefab, attackPoint.position, attackPoint.rotation);
+        hitbox.GetComponent<MeleeHitbox>().SetDamage(meleeDamage);
+
+        // Play attack animation (Example: Animator.SetTrigger("Attack"))
+        Debug.Log("Melee Attack Animation Plays");
+
+        yield return new WaitForSeconds(0.5f); // Let the damage hitbox linger
+
+        Destroy(hitbox); // Remove hitbox after attack
+    }
+
+    // ** Ranged Attack Sequence **
+    IEnumerator RangedAttack()
+    {
+        // Spawn Warning Line
+        GameObject warning = Instantiate(rangedWarningPrefab, attackPoint.position, Quaternion.identity);
+        warning.transform.right = (player.position - attackPoint.position).normalized;
+
+        yield return new WaitForSeconds(rangedWarningDuration); // Wait 1 second before shooting
+
+        Destroy(warning); // Remove warning
+
+        // Spawn Projectile
+        GameObject projectile = Instantiate(projectilePrefab, attackPoint.position, Quaternion.identity);
+        projectile.GetComponent<Rigidbody2D>().velocity = (player.position - attackPoint.position).normalized * projectileSpeed;
+        projectile.GetComponent<Projectile>().SetDamage(projectileDamage);
+    }
+}
