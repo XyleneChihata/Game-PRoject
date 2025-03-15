@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using System.Collections;
 
@@ -20,7 +21,7 @@ public class EnemyAI : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         rb = GetComponent<Rigidbody2D>();
-        StartCoroutine(RandomMovement()); // Start idle movement loop
+       // StartCoroutine(RandomMovement());
     }
 
     void Update()
@@ -55,7 +56,6 @@ public class EnemyAI : MonoBehaviour
             StartCoroutine(Attack());
         }
 
-        // Move back after attack
         if (distance < attackRange * 0.5f)
         {
             MoveAwayFrom(player.position);
@@ -82,9 +82,8 @@ public class EnemyAI : MonoBehaviour
     {
         isAttacking = true;
         Debug.Log("Enemy attacks!");
-        
-        // Attack logic here (e.g., spawn projectile or melee hitbox)
-        
+
+
         yield return new WaitForSeconds(attackCooldown);
         isAttacking = false;
     }
@@ -92,13 +91,13 @@ public class EnemyAI : MonoBehaviour
     void MoveTowards(Vector2 target)
     {
         Vector2 direction = (target - (Vector2)transform.position).normalized;
-        rb.velocity = direction * speed;
+        rb.linearVelocity = direction * speed;
     }
 
     void MoveAwayFrom(Vector2 target)
     {
         Vector2 direction = ((Vector2)transform.position - target).normalized;
-        rb.velocity = direction * speed;
+        rb.linearVelocity = direction * speed;
     }
 
     IEnumerator RandomMovement()
@@ -109,12 +108,12 @@ public class EnemyAI : MonoBehaviour
             if (Vector2.Distance(transform.position, player.position) > detectionRadius)
             {
                 randomDirection = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
-                rb.velocity = randomDirection * (speed * 0.5f);
+                rb.linearVelocity = randomDirection * (speed * 0.5f);
                 yield return new WaitForSeconds(Random.Range(1f, 3f));
             }
             else
             {
-                rb.velocity = Vector2.zero;
+                rb.linearVelocity = Vector2.zero;
                 yield return new WaitForSeconds(1f);
             }
         }
