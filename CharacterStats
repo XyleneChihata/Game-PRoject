@@ -1,0 +1,57 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+[System.Serializable]
+public class CharacterStats
+{
+    // Basic stats
+    public int health = 100;
+    public int strength = 10;
+    public int agility = 5;
+
+    // Progression Flags (for doors, events, etc.)
+    public Dictionary<string, bool> progressionFlags = new Dictionary<string, bool>();
+
+    // Dialogue and Quest Completion
+    public HashSet<string> completedDialogues = new HashSet<string>();
+    public HashSet<string> completedQuests = new HashSet<string>();
+
+    // Save progression flag
+    public void SetProgression(string key, bool value)
+    {
+        if (progressionFlags.ContainsKey(key))
+            progressionFlags[key] = value;
+        else
+            progressionFlags.Add(key, value);
+    }
+
+    // Check if a flag is set
+    public bool GetProgression(string key)
+    {
+        return progressionFlags.ContainsKey(key) && progressionFlags[key];
+    }
+
+    // Mark a dialogue as finished
+    public void CompleteDialogue(string dialogueID)
+    {
+        if (!completedDialogues.Contains(dialogueID))
+            completedDialogues.Add(dialogueID);
+    }
+
+    public bool HasCompletedDialogue(string dialogueID)
+    {
+        return completedDialogues.Contains(dialogueID);
+    }
+
+    // Mark a quest as finished
+    public void CompleteQuest(string questID)
+    {
+        if (!completedQuests.Contains(questID))
+            completedQuests.Add(questID);
+    }
+
+    public bool HasCompletedQuest(string questID)
+    {
+        return completedQuests.Contains(questID);
+    }
+}
